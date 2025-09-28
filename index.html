@@ -4,18 +4,25 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>Rock Paper Scissors</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
 </head>
 
 <body>
+    <button class="game-button" data-choice="rock">Rock ✊️</button>
+    <button class="game-button" data-choice="paper">Paper ✋️</button>
+    <button class="game-button" data-choice="scissors">Scissors ✌️</button>
+    <button id="resetButton">Reset</button>
+
+    <div>
+        You: <span id="playerScore">0</span>
+        Computer: <span id="computerScore">0</span>
+    </div>
+    <div id="result"></div>
+
     <script src="game.js"></script>
-
     <script>
-        console.log(playGame());
-
     </script>
 
 </body>
