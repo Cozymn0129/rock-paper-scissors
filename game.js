@@ -4,32 +4,55 @@ function getComputerChoice() {
         return "rock";
     }
     else if (ComputerChoice < 0.66) {
-        return "scissors";
-    }
-    else {
         return "paper";
     }
-}
-
-function getHumanChoice() {
-    while (true) {
-        let humanChoice = prompt("rock, scissors, or paper?");
-        if (humanChoice === null) return null;
-
-        let validHumanChoice = humanChoice.trim().toLowerCase();
-
-        const validChoices = ["rock", "scissors", "paper"];
-        if (!validChoices.includes(validHumanChoice)) {
-            alert("Invalid choice! Please only type rock, scissors, or paper.")
-            return getHumanChoice();
-        }
-
-        return validHumanChoice;
+    else {
+        return "scissors";
     }
 }
 
 let humanScore = 0;
 let computerScore = 0;
+
+const roundMsg = document.createElement("p");
+const scoreMsg = document.createElement("p");
+const finalMsg = document.createElement("p");
+
+const playerScoreSpan = document.getElementById("playerScore");
+const computerScoreSpan = document.getElementById("computerScore");
+const resultDiv = document.getElementById("result");
+const resetButton = document.getElementById("resetButton");
+
+resetButton.addEventListener("click", resetGame);
+
+const gameButtons = document.querySelectorAll(".game-button");
+
+gameButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        playRound(btn.id, getComputerChoice());
+    });
+});
+
+function resetGame() {
+    humanScore = 0;
+    computerScore = 0;
+
+    playerScoreSpan.textContent = humanScore;
+    computerScoreSpan.textContent = computerScore;
+
+    roundMsg.textContent = "";
+    scoreMsg.textContent = "";
+    finalMsg.textContent = "";
+    resultDiv.textContent = "Game has been reset!";
+
+    gameButtons.forEach(btn => {
+        btn.disabled = false;
+    });
+}
+
+resultDiv.appendChild(roundMsg);
+resultDiv.appendChild(scoreMsg);
+resultDiv.appendChild(finalMsg);
 
 function playRound(humanChoice, computerChoice) {
     const winPatterns = {
@@ -38,41 +61,39 @@ function playRound(humanChoice, computerChoice) {
         "scissors": "paper",
     }
 
+    let message = "";
+
     if (winPatterns[humanChoice] === computerChoice) {
         humanScore++;
-        return `You win! ${humanChoice} beats ${computerChoice}`
-    }
-    else if (humanChoice === computerChoice) {
-        return `Draw! You both chose ${humanChoice}`
-    }
-    else {
+        message = `✅ You win! ${humanChoice} beats ${computerChoice}`;
+    } else if (humanChoice === computerChoice) {
+        message = `⚖️ Draw! You both chose ${humanChoice}`;
+    } else {
         computerScore++;
-        return `You lose! ${computerChoice} beats ${humanChoice}`
+        message = `❌ You lose! ${computerChoice} beats ${humanChoice}`;
+    }
+
+    updateScore(message);
+}
+
+function updateScore(roundMessage) {
+    roundMsg.textContent = roundMessage;
+    scoreMsg.textContent = `Score → You: ${humanScore} | Computer: ${computerScore}`;
+
+    playerScoreSpan.textContent = humanScore;
+    computerScoreSpan.textContent = computerScore;
+
+    if (humanScore >= 5 || computerScore >= 5) {
+        announceWinner();
     }
 }
 
-function playGame() {
-    let playTime = 5;
-    for (let i = 0; i < playTime; i++) {
-        const humanSelection = getHumanChoice();
-        if (humanSelection === null) {
-            console.log("Game ended early.");
-            return;
-        }
-        const computerSelection = getComputerChoice();
-        console.log(playRound(humanSelection, computerSelection));
+function announceWinner() {
+    if (humanScore > computerScore) {
+        finalMsg.textContent = "👑 You are the Champion!";
+    } else {
+        finalMsg.textContent = "🤖 Computer wins this time!";
     }
 
-    console.log("==== Final Result ====");
-    console.log(`You: ${humanScore} | Computer: ${computerScore}`);
-    if (humanScore > computerScore) {
-        console.log("👑 You are the Champion!");
-    }
-    else if (humanScore < computerScore) {
-        console.log("🤖 Computer wins this time!");
-    }
-    else {
-        console.log("⚖️ It's a draw!");
-    }
-    console.log("======================")
+    gameButtons.forEach(btn => btn.disabled = true);
 }
